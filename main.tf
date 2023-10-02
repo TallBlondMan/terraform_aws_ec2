@@ -10,7 +10,8 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 }
-# Get the Virtual Private Network created 
+
+# GCreate new VPC for infra
 resource "aws_vpc" "vpc0" {
   cidr_block = "10.6.0.0/16"
 
@@ -18,6 +19,18 @@ resource "aws_vpc" "vpc0" {
     Name = "vpc0"
   }
 }
+
+# Create IGW for access to internet
+resource "aws_internet_gateway" "igw0" {
+  vpc_id = aws_vpc.vpc0.id
+}
+
+# Add the IGW to VPC
+resource "aws_vpc_attachment" "example" {
+  vpc_id             = aws_vpc.vpc0.id
+  internet_gateway_id = aws_internet_gateway.igw0.id
+}
+
 # Create a subnet for VM
 resource "aws_subnet" "sub0" {
   vpc_id            = aws_vpc.vpc0.id
@@ -29,6 +42,7 @@ resource "aws_subnet" "sub0" {
   }
 }
 
+# Create security group to allow SSH from anywhere
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
   description = "Allow SSH connection from anywhere"
@@ -54,6 +68,7 @@ resource "aws_security_group" "allow_ssh" {
     Name = "Allow SSH"
   }
 }
+
 # Get latest Amazaon Linux 2 image with hvm and ebs
 data "aws_ami" "amzn-linux-ami" {
   most_recent = true
@@ -74,6 +89,7 @@ data "aws_ami" "amzn-linux-ami" {
     values = ["x86_64"]
   }
 }
+
 # Combine it all into a VM
 resource "aws_instance" "patchwerk_vm" {
   ami           = data.aws_ami.amzn-linux-ami.id
