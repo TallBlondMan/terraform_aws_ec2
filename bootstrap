@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # Add user
-useradd -mG sudo -p password msmet
+sudo useradd -mG sudo -p password msmet
 
 # Install software
 sudo yum update -y
