@@ -11,6 +11,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Initialize the network
 module "network" {
   source = "./modules/network_setup"
 }
@@ -36,6 +37,11 @@ data "aws_ami" "amzn-linux-ami" {
   }
 }
 
+# Get the cloud-init
+data "template_file" "cloud_init" {
+  template = file("./bootstrap.yaml")
+}
+
 # Combine it all into a VM
 resource "aws_instance" "patchwerk_vm" {
   ami           = data.aws_ami.amzn-linux-ami.id
@@ -59,7 +65,7 @@ resource "aws_instance" "patchwerk_vm" {
   }
 
   # Postprovision settings to include
-  user_data = file("./bootstrap.yaml")
+  user_data = data.template_file.cloud_init.rendered
 }
 
 # Add security groups
