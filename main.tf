@@ -68,8 +68,12 @@ resource "aws_instance" "patchwerk_vm" {
   user_data = data.template_file.cloud_init.rendered
 }
 
-# Add security groups
-# Add public IP to connect
-# make it so that it's configured
+
 # Random password for user
 # kubectl and awscli installed
+
+# get the K8s cluster installed
+# let the machine administer the cluster
+
+# Variablize most of the thing
+# Create a instance module for this file
