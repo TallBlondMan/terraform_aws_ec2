@@ -11,6 +11,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
+module "network" {
+  source = "./modules/network_setup"
+}
+
 # Get latest Amazaon Linux 2 image with hvm and ebs
 data "aws_ami" "amzn-linux-ami" {
   most_recent = true
@@ -38,10 +42,10 @@ resource "aws_instance" "patchwerk_vm" {
   instance_type = "t2.micro"
 
   # Define the network interface and public IP
-  subnet_id                   = aws_subnet.sub0.id
+  subnet_id                   = module.network.subnet_id
   private_ip                  = "10.6.1.10"
   associate_public_ip_address = true
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids      = [module.network.security_group]
 
   # Define volume size and type
   root_block_device {
@@ -55,7 +59,7 @@ resource "aws_instance" "patchwerk_vm" {
   }
 
   # Postprovision settings to include
-  user_data = file("./bootstrap")
+  user_data = file("./bootstrap.yaml")
 }
 
 # Add security groups

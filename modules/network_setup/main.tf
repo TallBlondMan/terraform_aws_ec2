@@ -17,8 +17,8 @@ resource "aws_internet_gateway" "igw0" {
 
 # Allow internet connection
 resource "aws_route" "internet_access" {
-  gateway_id     = aws_internet_gateway.igw0.id
-  route_table_id = aws_vpc.vpc0.default_route_table_id
+  gateway_id             = aws_internet_gateway.igw0.id
+  route_table_id         = aws_vpc.vpc0.default_route_table_id
   destination_cidr_block = "0.0.0.0/0"
 
   # Wait for VPC and IGW
@@ -40,6 +40,7 @@ resource "aws_subnet" "sub0" {
 }
 
 # Create security group to allow SSH from anywhere
+# And connection to anywhere
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
   description = "Allow SSH connection from anywhere"

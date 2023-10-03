@@ -1,0 +1,27 @@
+# #!/bin/bash 
+
+# # Add user
+# sudo useradd -mG sudo -p password msmet
+
+# # Install software
+# sudo yum update -y
+# sudo yum install curl vim ca-certificates
+# sudo yum remove awscli
+# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+# unzip awscliv2.zip
+# sudo ./aws/install
+
+# # Allow no key connection
+# sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+# sudo systemctl restart sshd
+
+# cloud-init
+repo_update: true
+
+users:
+  - default 
+  - name: msmet
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVGgW9Cd9K0to6IE59WVha6IGy2Zdy1KBicseQAQ2cHMLf+NHuj4D7KJsA6vPaOSk3Rm0SXUul/aNjq4FDMkSw8VkhxuYGLncjO5NaR63eLBOR8jE95c6SSkyHW2UkYPSCNv1ORnFAdJmEq/QFCel4rNd5kXbeAjJG3l44nV7ktKgYH6tXmiqhpzd4VQkHQ+BzGyjcATtjHMBlML3kIGKpNh9NJ9O+QHzJeMv0TnEhJFNg67E7PiQyhBPsQrC9UjAcKp+eucJ5ZU2xz2obEB3OkPoEnCSinqNYAJDJ2qk7WfLfz89UjiVxQ7SjKyXjtEmEwWmNbX5BBG/DOBAT9LvMKpiIXZn0n+Evzl88HIbvIwtChaQ0dC9ibKc9j5TyxhLA2FYCcVvmZqJbYP5SDNaY4H6ibErqEIJkqH+pV+x8olsOANdX8gpOX7+QxxGoMwhYkwQ5Wr6AwMw/SU1Z3Km4zJyeU1V4bm/1tAPvKoBNT5xnxxQOjB3fgc4qBVqJAQ0= god\msmet@godex-win-015
