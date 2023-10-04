@@ -66,3 +66,5 @@ variable "ingress_rules" {
   }
   description = "Ingress rules to apply to machine"
 }
+# TODO:
+# make use of is subnet_is_valid
