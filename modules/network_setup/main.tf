@@ -32,7 +32,7 @@ resource "aws_route" "internet_access" {
 resource "aws_subnet" "sub0" {
   vpc_id            = aws_vpc.vpc0.id
   cidr_block        = var.subnet_cidr
-  availability_zone = "us-east-1a"
+  availability_zone = var.subnet_zone
 
   tags = {
     Name = var.subnet_name
@@ -48,6 +48,7 @@ resource "aws_security_group" "allowed_ports" {
 
   dynamic "ingress" {
     for_each = var.ingress_rules
+    
     content {
       description = ingress.value.description
       from_port   = ingress.value.port
