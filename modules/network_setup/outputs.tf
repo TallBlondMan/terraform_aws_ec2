@@ -9,6 +9,6 @@ output "subnet_id" {
 }
 
 output "security_group" {
-  value       = aws_security_group.allow_ssh.id
+  value       = aws_security_group.allowed_ports.id
   description = "Allow SSH group id"
 }

@@ -1,9 +1,9 @@
 # GCreate new VPC for infra
 resource "aws_vpc" "vpc0" {
-  cidr_block = "10.6.0.0/16"
+  cidr_block = var.vpc_cidr
 
   tags = {
-    Name = "vpc0"
+    Name = var.vpc_name
   }
 }
 
@@ -11,7 +11,7 @@ resource "aws_vpc" "vpc0" {
 resource "aws_internet_gateway" "igw0" {
   vpc_id = aws_vpc.vpc0.id
   tags = {
-    Name = "igw0"
+    Name = var.igw_name
   }
 }
 
@@ -31,27 +31,30 @@ resource "aws_route" "internet_access" {
 # Create a subnet for VM
 resource "aws_subnet" "sub0" {
   vpc_id            = aws_vpc.vpc0.id
-  cidr_block        = "10.6.1.0/24"
+  cidr_block        = var.subnet_cidr
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "sub0"
+    Name = var.subnet_name
   }
 }
 
 # Create security group to allow SSH from anywhere
 # And connection to anywhere
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH connection from anywhere"
+resource "aws_security_group" "allowed_ports" {
+  name        = "allowed ports"
+  description = "Allowed port and egress all"
   vpc_id      = aws_vpc.vpc0.id
 
-  ingress {
-    description = "Allow SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      description = ingress.value.description
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
   }
 
   egress {
@@ -63,6 +66,6 @@ resource "aws_security_group" "allow_ssh" {
   }
 
   tags = {
-    Name = "Allow SSH"
+    Name = var.security_group_name
   }
 }
